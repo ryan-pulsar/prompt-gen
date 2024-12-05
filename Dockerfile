@@ -1,12 +1,12 @@
-FROM node:18 as builder
+FROM node:18-alpine AS builder
 WORKDIR /app
-COPY . .
+COPY package*.json ./
 RUN npm install
+COPY . .
 RUN npm run build
 
-FROM busybox:latest
-RUN adduser -D static
-WORKDIR /home/static/html
-COPY --from=builder /app/dist .
-USER static
-CMD ["busybox", "httpd", "-f", "-v", "-p", "80", "-h", "/home/static/html"]
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
