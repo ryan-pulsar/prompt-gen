@@ -1,8 +1,12 @@
-FROM node:18-alpine
+FROM node:18 as builder
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
 COPY . .
+RUN npm install
 RUN npm run build
-EXPOSE 80
-CMD ["npm", "run", "serve"]
+
+FROM busybox:latest
+RUN adduser -D static
+WORKDIR /home/static/html
+COPY --from=builder /app/dist .
+USER static
+CMD ["busybox", "httpd", "-f", "-v", "-p", "80", "-h", "/home/static/html"]
