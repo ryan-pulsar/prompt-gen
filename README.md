@@ -1,1 +1,3 @@
-{"content": "IyBBSSBQcm9tcHQgR2VuZXJhdG9yCgpXZWIgYXBwIGZvciBnZW5lcmF0aW5nIEFJIHByb21wdHMgdGhhdCBtYWludGFpbiBjb250ZXh0IGFjcm9zcyBjaGF0IHNlc3Npb25zLg==", "encoding": "base64"}
+# AI Prompt Generator
+
+Web app for generating AI prompts that maintain context across chat sessions.
