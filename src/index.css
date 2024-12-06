@@ -3,8 +3,14 @@
 @tailwind utilities;
 
 :root {
-  background: theme('colors.gray.50');
-  color: theme('colors.gray.900');
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -14,8 +20,4 @@ body {
 
 .gradient-bg {
   background: linear-gradient(135deg, #3B82F6 0%, #10B981 100%);
-}
-
-.card-shadow {
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
