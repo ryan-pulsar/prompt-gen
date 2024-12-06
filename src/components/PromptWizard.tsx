@@ -16,10 +16,103 @@ import type { ProjectConfig } from '../types';
 import { generateEnhancedPrompt } from '../utils/promptGeneration';
 import { generateSystemHealthReport } from '../utils/systemHealth';
 
-// ... rest of the imports ...
+const defaultConfig: ProjectConfig = {
+  type: 'frontend',
+  deployment: {
+    type: 'docker',
+    frequency: 'continuous',
+    environments: ['development', 'production']
+  },
+  testing: {
+    unit: true,
+    integration: false,
+    e2e: false
+  },
+  security: {
+    authMethod: 'none',
+    encryption: false,
+    compliance: []
+  },
+  scaling: {
+    expectedLoad: 'low',
+    dataVolume: 'small',
+    distribution: 'single-region'
+  }
+};
+
+const defaultMemory = {
+  currentState: 'Initializing project',
+  previousErrors: [
+    {
+      error: 'TypeScript build errors due to missing types',
+      solution: 'Properly define all types and interfaces before implementation',
+      context: 'During initial setup of NextUI components',
+      prevention: 'Always start with type definitions',
+      impact: 'medium' as const,
+      timeToResolve: '30 minutes'
+    }
+  ],
+  importantDecisions: [],
+  workingConstraints: [],
+  successfulPatterns: [],
+  architecturalDecisions: [],
+  dependencies: [],
+  performanceMetrics: [],
+  deploymentHistory: [],
+  systemHealth: generateSystemHealthReport()
+};
+
+const TOTAL_STEPS = 4;
 
 export default function PromptWizard() {
-  // ... previous state code ...
+  const [currentStep, setCurrentStep] = useState(1);
+  const [projectName, setProjectName] = useState('');
+  const [context, setContext] = useState('');
+  const [config, setConfig] = useState<ProjectConfig>(defaultConfig);
+  const [generatedPrompt, setGeneratedPrompt] = useState('');
+
+  const progress = (currentStep / TOTAL_STEPS) * 100;
+
+  const handleNext = () => {
+    if (currentStep < TOTAL_STEPS) {
+      setCurrentStep(prev => prev + 1);
+    }
+  };
+
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep(prev => prev - 1);
+    }
+  };
+
+  const handleTypeChange = (value: string) => {
+    setConfig({
+      ...config,
+      type: value as 'frontend' | 'backend' | 'fullstack'
+    });
+  };
+
+  const handleFeatureChange = (values: string[]) => {
+    setConfig({
+      ...config,
+      testing: {
+        ...config.testing,
+        unit: values.includes('unit'),
+        integration: values.includes('integration'),
+        e2e: values.includes('e2e')
+      }
+    });
+  };
+
+  const handleGeneratePrompt = () => {
+    const prompt = generateEnhancedPrompt(
+      projectName,
+      context,
+      config,
+      defaultMemory
+    );
+    setGeneratedPrompt(prompt);
+  };
 
   const renderStepContent = () => {
     switch (currentStep) {
