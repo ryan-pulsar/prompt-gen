@@ -1,37 +1,97 @@
-// Add new options to the state
-const [options, setOptions] = useState<PromptOptions>({
-  includeErrorHandling: true,
-  includeFileManagement: true,
-  includeDocumentation: true,
-  includeChangeLog: true,
-  includeDeployment: false,
-  includeInfrastructure: false,
-  includeRateLimiting: false,
-  includeTokenManagement: false,
-  includeErrorRecovery: false,
-  includeVersionControl: false,
-  includeBranchStrategy: false,
-  includeCodeReview: false,
-  includeCaching: false,
-  includeLoadBalancing: false,
-  includeOptimization: false
-});
+import React, { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import AdvancedOptions from './AdvancedOptions';
+import { generatePrompt } from '../utils/generatePrompt';
 
-// Add new sections in the UI for these options
-<div className="bg-gray-50 p-6 rounded-lg">
-  <h3 className="text-lg font-medium text-gray-900 mb-4">Deployment Options</h3>
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-    <label className="flex items-center space-x-3">
-      <input
-        type="checkbox"
-        checked={options.includeDeployment}
-        onChange={() => handleOptionChange('includeDeployment')}
-        className="h-5 w-5 text-blue-600 rounded"
-      />
-      <span className="text-gray-700">Deployment Configuration</span>
-    </label>
-    {/* Add similar checkboxes for other options */}
-  </div>
-</div>
+const PromptGenerator: React.FC = () => {
+  // ... existing state ...
 
-// ... rest of the component code
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto">
+        <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="text-3xl font-bold text-center text-slate-800">
+              AI Prompt Generator
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="basic" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="basic">Basic Info</TabsTrigger>
+                <TabsTrigger value="advanced">Advanced Options</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="basic" className="space-y-6">
+                <div className="space-y-4">
+                  <div>
+                    <Input
+                      placeholder="Project Name"
+                      value={projectName}
+                      onChange={(e) => setProjectName(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Textarea
+                      placeholder="Project Context"
+                      value={context}
+                      onChange={(e) => setContext(e.target.value)}
+                      rows={4}
+                    />
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="advanced">
+                <AdvancedOptions
+                  config={config}
+                  onChange={setConfig}
+                />
+              </TabsContent>
+
+              <div className="pt-6">
+                <Button
+                  onClick={handleGeneratePrompt}
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
+                  size="lg"
+                >
+                  Generate Prompt
+                </Button>
+              </div>
+            </Tabs>
+
+            {generatedPrompt && (
+              <div className="mt-8">
+                <Card className="bg-slate-50">
+                  <CardHeader>
+                    <CardTitle className="flex justify-between items-center">
+                      <span>Generated Prompt</span>
+                      <Button
+                        onClick={() => navigator.clipboard.writeText(generatedPrompt)}
+                        variant="outline"
+                        size="sm"
+                      >
+                        Copy to Clipboard
+                      </Button>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <pre className="whitespace-pre-wrap bg-white p-4 rounded-md border text-sm overflow-auto">
+                      {generatedPrompt}
+                    </pre>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default PromptGenerator;
