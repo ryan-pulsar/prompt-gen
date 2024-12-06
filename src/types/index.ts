@@ -1,8 +1,8 @@
-export type SystemHealth = {
+export interface SystemHealth {
   category: string;
   status: 'good' | 'warning' | 'error';
   recommendations: string[];
-};
+}
 
 export interface ProjectConfig {
   type: 'frontend' | 'backend' | 'fullstack';
