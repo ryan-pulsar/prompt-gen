@@ -1,1 +1,1 @@
-// DELETE THIS FILE
+export {}; // Delete this file
