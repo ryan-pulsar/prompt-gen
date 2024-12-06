@@ -9,9 +9,9 @@ RUN npm run build
 # Production stage
 FROM node:18-alpine
 WORKDIR /app
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/server.js .
-COPY --from=builder /app/package.json .
+COPY package*.json ./
 RUN npm install --production
+COPY --from=builder /app/dist ./dist
+COPY server.js .
 EXPOSE 80
 CMD ["node", "server.js"]
