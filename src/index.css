@@ -15,8 +15,27 @@
 body {
   margin: 0;
   min-height: 100vh;
+  background: linear-gradient(135deg, rgb(239 246 255) 0%, rgb(236 253 245) 100%);
 }
 
-.gradient-bg {
-  background: linear-gradient(135deg, #3B82F6 0%, #10B981 100%);
+@layer components {
+  .wizard-card {
+    @apply backdrop-blur-sm bg-white/90 shadow-xl border-none rounded-xl;
+  }
+
+  .step-content {
+    @apply p-6 bg-white/50 rounded-lg shadow-sm;
+  }
+
+  .input-field {
+    @apply bg-white/70 border-blue-100 focus:border-blue-300;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-custom-blue to-custom-green text-white font-semibold;
+  }
+
+  .btn-secondary {
+    @apply border-2 border-custom-blue text-custom-blue font-semibold;
+  }
 }
