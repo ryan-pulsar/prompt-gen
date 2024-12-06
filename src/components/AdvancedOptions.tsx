@@ -5,6 +5,18 @@ import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import type { ProjectConfig } from '../types';
 
+const defaultUiConfig = {
+  framework: 'react',
+  stateManagement: 'none',
+  responsive: true
+};
+
+const defaultBackendConfig = {
+  apiPattern: 'rest',
+  database: 'none',
+  auth: false
+};
+
 interface Props {
   config: ProjectConfig;
   onChange: (config: ProjectConfig) => void;
@@ -15,16 +27,8 @@ const AdvancedOptions: React.FC<Props> = ({ config, onChange }) => {
     onChange({
       ...config,
       type: value,
-      ui: value !== 'backend' ? {
-        framework: 'react',
-        stateManagement: 'none',
-        responsive: true
-      } : undefined,
-      backend: value !== 'frontend' ? {
-        apiPattern: 'rest',
-        database: 'none',
-        auth: false
-      } : undefined
+      ui: value !== 'backend' ? defaultUiConfig : undefined,
+      backend: value !== 'frontend' ? defaultBackendConfig : undefined
     });
   };
 
