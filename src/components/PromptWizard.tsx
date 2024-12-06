@@ -3,17 +3,45 @@ import {
   Card,
   CardBody,
   Button,
-  Stepper,
-  Step,
   Input,
   Textarea,
   RadioGroup,
   Radio,
   CheckboxGroup,
   Checkbox,
-  Progress
+  Progress,
+  Divider
 } from '@nextui-org/react';
-import { ProjectConfig } from '../types';
+import type { ProjectConfig } from '../types';
+
+const defaultConfig: ProjectConfig = {
+  type: 'frontend',
+  ui: {
+    framework: 'react',
+    stateManagement: 'none',
+    responsive: true
+  },
+  deployment: {
+    type: 'docker',
+    frequency: 'continuous',
+    environments: ['development', 'production']
+  },
+  testing: {
+    unit: true,
+    integration: false,
+    e2e: false
+  },
+  security: {
+    authMethod: 'none',
+    encryption: false,
+    compliance: []
+  },
+  scaling: {
+    expectedLoad: 'low',
+    dataVolume: 'small',
+    distribution: 'single-region'
+  }
+};
 
 const TOTAL_STEPS = 4;
 
@@ -21,10 +49,17 @@ const PromptWizard: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [projectName, setProjectName] = useState('');
   const [context, setContext] = useState('');
-  const [config, setConfig] = useState<ProjectConfig>({/* default config */});
+  const [config, setConfig] = useState<ProjectConfig>(defaultConfig);
   const [generatedPrompt, setGeneratedPrompt] = useState('');
 
   const progress = (currentStep / TOTAL_STEPS) * 100;
+
+  const stepTitles = [
+    'Project Details',
+    'Project Type',
+    'Features',
+    'Generate'
+  ];
 
   const handleNext = () => {
     if (currentStep < TOTAL_STEPS) {
@@ -36,6 +71,25 @@ const PromptWizard: React.FC = () => {
     if (currentStep > 1) {
       setCurrentStep(prev => prev - 1);
     }
+  };
+
+  const handleTypeChange = (value: string) => {
+    setConfig({
+      ...config,
+      type: value as 'frontend' | 'backend' | 'fullstack'
+    });
+  };
+
+  const handleFeatureChange = (values: string[]) => {
+    setConfig({
+      ...config,
+      testing: {
+        ...config.testing,
+        unit: values.includes('unit'),
+        integration: values.includes('integration'),
+        e2e: values.includes('e2e')
+      }
+    });
   };
 
   const renderStepContent = () => {
@@ -67,7 +121,7 @@ const PromptWizard: React.FC = () => {
             <RadioGroup
               label="Select project type"
               value={config.type}
-              onChange={(value) => setConfig({ ...config, type: value })}
+              onValueChange={handleTypeChange}
             >
               <Radio value="frontend">Frontend</Radio>
               <Radio value="backend">Backend</Radio>
@@ -80,14 +134,15 @@ const PromptWizard: React.FC = () => {
           <div className="space-y-6">
             <h2 className="text-xl font-bold">Features & Requirements</h2>
             <CheckboxGroup
-              label="Select required features"
-              value={[]}
-              onChange={() => {}}
+              label="Select testing features"
+              value={Object.entries(config.testing)
+                .filter(([_, value]) => value)
+                .map(([key]) => key)}
+              onValueChange={handleFeatureChange}
             >
-              <Checkbox value="auth">Authentication</Checkbox>
-              <Checkbox value="api">API Integration</Checkbox>
-              <Checkbox value="database">Database</Checkbox>
-              <Checkbox value="testing">Testing</Checkbox>
+              <Checkbox value="unit">Unit Testing</Checkbox>
+              <Checkbox value="integration">Integration Testing</Checkbox>
+              <Checkbox value="e2e">E2E Testing</Checkbox>
             </CheckboxGroup>
           </div>
         );
@@ -104,7 +159,7 @@ const PromptWizard: React.FC = () => {
             </Card>
             <Button
               color="primary"
-              onClick={() => setGeneratedPrompt('Generated prompt will appear here')}
+              onPress={() => setGeneratedPrompt('Generated prompt will appear here')}
             >
               Generate Prompt
             </Button>
@@ -118,43 +173,49 @@ const PromptWizard: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-8">
       <div className="max-w-4xl mx-auto">
-        <Card className="w-full p-6">
-          <CardBody>
+        <Card>
+          <CardBody className="p-6">
             <div className="space-y-6">
-              <Progress
-                aria-label="Progress"
-                value={progress}
-                className="max-w-md"
-                color="primary"
-                showValueLabel={true}
-              />
-              <Stepper
-                activeStep={currentStep}
-                className="mb-6"
-              >
-                <Step title="Project Details" />
-                <Step title="Project Type" />
-                <Step title="Features" />
-                <Step title="Generate" />
-              </Stepper>
+              <div className="space-y-2">
+                <Progress
+                  aria-label="Progress"
+                  value={progress}
+                  className="max-w-md"
+                  color="primary"
+                />
+                <div className="flex justify-between max-w-md">
+                  {stepTitles.map((title, index) => (
+                    <span
+                      key={title}
+                      className={`text-sm ${index + 1 === currentStep ? 'text-blue-600 font-bold' : 'text-gray-500'}`}
+                    >
+                      {title}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <Divider className="my-4" />
 
               <div className="mt-8">
                 {renderStepContent()}
               </div>
 
+              <Divider className="my-4" />
+
               <div className="flex justify-between mt-8">
                 <Button
+                  onPress={handleBack}
                   color="default"
                   variant="bordered"
-                  onClick={handleBack}
-                  disabled={currentStep === 1}
+                  isDisabled={currentStep === 1}
                 >
                   Back
                 </Button>
                 <Button
+                  onPress={handleNext}
                   color="primary"
-                  onClick={handleNext}
-                  disabled={currentStep === TOTAL_STEPS}
+                  isDisabled={currentStep === TOTAL_STEPS}
                 >
                   Next
                 </Button>
