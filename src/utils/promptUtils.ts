@@ -1,28 +1,45 @@
-export const generatePrompt = (projectName: string, context: string, errors: string[], solutions: string[]): string => {
-  const errorHistory = errors.length > 0
-    ? `\n\nError History and Solutions:\n${errors.map((error, i) => 
-        `Error ${i + 1}: ${error}\nSolution: ${solutions[i]}\n`
-      ).join('\n')}`
-    : '';
+interface PromptOptions {
+  includeErrorHandling: boolean;
+  includeFileManagement: boolean;
+  includeDocumentation: boolean;
+  includeChangeLog: boolean;
+}
 
-  return `Project: ${projectName}
+export const generatePrompt = (
+  projectName: string,
+  context: string,
+  errors: string[],
+  solutions: string[],
+  options: PromptOptions
+): string => {
+  let prompt = `Project: ${projectName}\n\nContext:\n${context}\n\nInstructions for AI:\n`;
 
-Context:
-${context}
+  if (options.includeChangeLog) {
+    prompt += '1. Maintain a detailed changelog in CHANGELOG.md\n';
+  }
 
-Instructions for AI:
-1. Maintain a detailed changelog in CHANGELOG.md
-2. Keep files under 200 lines when possible
-3. Add clear comments explaining code functionality
-4. Document all changes and decisions
-5. Reference previous error solutions when encountering similar issues${errorHistory}
+  if (options.includeFileManagement) {
+    prompt += '2. Keep files under 200 lines when possible\n';
+  }
 
-Current Status:
-[AI should list current status and progress here]
+  if (options.includeDocumentation) {
+    prompt += '3. Add clear comments explaining code functionality\n';
+    prompt += '4. Document all changes and decisions\n';
+  }
 
-Next Steps:
-[AI should outline planned next steps here]
+  if (options.includeErrorHandling && errors.length > 0) {
+    prompt += '\nError History and Solutions:\n';
+    errors.forEach((error, i) => {
+      prompt += `Error ${i + 1}: ${error}\nSolution: ${solutions[i]}\n\n`;
+    });
+  }
 
-Previous Solutions Summary:
-[AI should reference relevant past solutions when encountering similar issues]`;
+  prompt += '\nCurrent Status:\n[AI should list current status and progress here]\n\n';
+  prompt += 'Next Steps:\n[AI should outline planned next steps here]';
+
+  if (options.includeErrorHandling) {
+    prompt += '\n\nPrevious Solutions Summary:\n[AI should reference relevant past solutions when encountering similar issues]';
+  }
+
+  return prompt;
 };
