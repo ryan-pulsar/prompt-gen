@@ -1,14 +1,22 @@
-const express = require('express');
-const path = require('path');
+import express from 'express';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const app = express();
+const port = process.env.PORT || 80;
 
-app.use(express.static(path.join(__dirname, 'dist')));
+// Serve static files from the dist directory
+app.use(express.static(join(__dirname, 'dist')));
 
+// Handle all routes for SPA
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+    res.sendFile(join(__dirname, 'dist', 'index.html'));
 });
 
-const port = process.env.PORT || 80;
 app.listen(port, '0.0.0.0', () => {
-  console.log(`Server running on port ${port}`);
+    console.log(`Server is running on port ${port}`);
+    console.log(`Serving files from: ${join(__dirname, 'dist')}`);
 });
