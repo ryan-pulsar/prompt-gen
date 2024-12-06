@@ -15,7 +15,6 @@ export interface ProjectMemory {
   importantDecisions: string[];
   workingConstraints: string[];
   systemHealth: SystemHealth[];
-  [key: string]: any;
 }
 
 export function generateEnhancedPrompt(
