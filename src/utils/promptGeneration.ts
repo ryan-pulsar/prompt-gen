@@ -9,13 +9,13 @@ interface ErrorSolution {
   timeToResolve: string;
 }
 
-interface ProjectMemory {
+export interface ProjectMemory {
   currentState: string;
   previousErrors: ErrorSolution[];
   importantDecisions: string[];
   workingConstraints: string[];
   systemHealth: SystemHealth[];
-  [key: string]: any; // Allow additional properties
+  [key: string]: any;
 }
 
 export function generateEnhancedPrompt(
@@ -35,7 +35,7 @@ Current State: ${memory.currentState}
 System Health:
 ${memory.systemHealth.map(health => `${health.category}: ${health.status}
   Recommendations:
-  ${health.recommendations.map(r => `  - ${r}`).join('\n')}`).join('\n')}
+  ${health.recommendations.map((rec: string) => `  - ${rec}`).join('\n')}`).join('\n')}
 
 === Error Prevention Protocol ===
 Previously Encountered Issues:
