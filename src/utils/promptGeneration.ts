@@ -3,6 +3,35 @@ interface ErrorSolution {
   solution: string;
   context: string;
   prevention: string;
+  impact: 'low' | 'medium' | 'high';
+  timeToResolve: string;
+}
+
+interface CodeSnippet {
+  description: string;
+  code: string;
+  context: string;
+  successMetrics: string[];
+}
+
+interface ArchitecturalDecision {
+  decision: string;
+  reasoning: string;
+  alternatives: string[];
+  tradeoffs: string[];
+}
+
+interface DependencyMap {
+  name: string;
+  version: string;
+  purpose: string;
+  alternatives: string[];
+}
+
+interface PerformanceMetrics {
+  metric: string;
+  threshold: string;
+  currentValue: string;
 }
 
 export interface ProjectMemory {
@@ -10,6 +39,21 @@ export interface ProjectMemory {
   previousErrors: ErrorSolution[];
   importantDecisions: string[];
   workingConstraints: string[];
+  successfulPatterns: CodeSnippet[];
+  architecturalDecisions: ArchitecturalDecision[];
+  dependencies: DependencyMap[];
+  performanceMetrics: PerformanceMetrics[];
+  deploymentHistory: {
+    environment: string;
+    status: string;
+    issues: string[];
+    solutions: string[];
+  }[];
+  systemHealth: {
+    category: string;
+    status: 'good' | 'warning' | 'error';
+    recommendations: string[];
+  }[];
 }
 
 export function generateEnhancedPrompt(
@@ -23,41 +67,105 @@ export function generateEnhancedPrompt(
 Context:
 ${context}
 
+=== AI Assistant Optimization Protocol ===
+1. Continuous Learning Mode:
+   - Actively monitor for patterns in errors and solutions
+   - Update prevention strategies based on new experiences
+   - Build upon successful approaches
+   - Adapt to changing project requirements
+
+2. Response Optimization:
+   - Start with type definitions and interfaces
+   - Verify framework compatibility before implementation
+   - Check for similar past solutions
+   - Consider performance implications
+
+3. Quality Assurance Protocol:
+   - Validate all code against TypeScript standards
+   - Ensure proper error handling
+   - Maintain consistent coding patterns
+   - Follow established project conventions
+
 === Working Memory ===
 Current State: ${memory.currentState}
 
-Important Decisions:
-${memory.importantDecisions.map(d => `- ${d}`).join('\n')}
+System Health Overview:
+${memory.systemHealth.map(health => `${health.category}: ${health.status}
+  Recommendations:
+  ${health.recommendations.map(r => `  - ${r}`).join('\n')}`).join('\n')}
 
-Working Constraints:
-${memory.workingConstraints.map(c => `- ${c}`).join('\n')}
+Architectural Decisions:
+${memory.architecturalDecisions.map(decision => `
+Decision: ${decision.decision}
+Reasoning: ${decision.reasoning}
+Alternatives Considered: ${decision.alternatives.join(', ')}
+Tradeoffs: ${decision.tradeoffs.join(', ')}`).join('\n')}
+
+Successful Patterns:
+${memory.successfulPatterns.map(pattern => `
+Pattern: ${pattern.description}
+Context: ${pattern.context}
+Success Metrics: ${pattern.successMetrics.join(', ')}`).join('\n')}
+
+Dependency Management:
+${memory.dependencies.map(dep => `- ${dep.name}@${dep.version}: ${dep.purpose}
+  Alternatives: ${dep.alternatives.join(', ')}`).join('\n')}
+
+Performance Metrics:
+${memory.performanceMetrics.map(metric => `- ${metric.metric}: ${metric.currentValue} (Threshold: ${metric.threshold})`).join('\n')}
 
 === Error Prevention Protocol ===
 Previously Encountered Issues:
 ${memory.previousErrors.map(error => `
 Issue: ${error.error}
+Impact: ${error.impact}
+Resolution Time: ${error.timeToResolve}
 Solution: ${error.solution}
 Context: ${error.context}
 Prevention Strategy: ${error.prevention}`).join('\n')}
 
-=== Self-Correction Guidelines ===
-1. Before executing any command or making changes:
-   - Verify all dependencies are properly configured
-   - Check for type safety in TypeScript code
-   - Ensure all imports are available
-   - Validate framework compatibility
+=== Deployment History ===
+${memory.deploymentHistory.map(deploy => `
+Environment: ${deploy.environment}
+Status: ${deploy.status}
+Issues: ${deploy.issues.join(', ')}
+Solutions: ${deploy.solutions.join(', ')}`).join('\n')}
 
-2. When encountering errors:
-   - Document the error immediately
-   - Record the context and solution
-   - Update working memory with prevention strategy
-   - Apply solution systematically
+=== Self-Improvement Protocol ===
+1. Pre-Implementation Checklist:
+   - Verify all types and interfaces
+   - Check dependency compatibility
+   - Review similar patterns in memory
+   - Assess performance impact
+   - Validate framework requirements
 
-3. Continuous Improvement:
-   - Keep track of all major decisions
-   - Document why certain approaches were chosen
-   - Maintain a list of working constraints
-   - Update prevention strategies based on new learnings
+2. Code Quality Standards:
+   - Follow TypeScript best practices
+   - Implement proper error boundaries
+   - Add comprehensive documentation
+   - Include unit tests
+   - Maintain consistent styling
+
+3. Error Handling Strategy:
+   - Log detailed error information
+   - Implement graceful fallbacks
+   - Update error prevention database
+   - Document resolution steps
+   - Add regression tests
+
+4. Performance Optimization:
+   - Monitor build size
+   - Track render performance
+   - Optimize dependencies
+   - Implement lazy loading
+   - Use memoization where appropriate
+
+5. Deployment Safety:
+   - Verify environment variables
+   - Check build configuration
+   - Test in staging environment
+   - Implement feature flags
+   - Plan rollback strategy
 
 === Project Configuration ===
 Type: ${config.type}
@@ -65,48 +173,18 @@ ${config.ui ? `UI Framework: ${config.ui.framework}` : ''}
 ${config.deployment ? `Deployment: ${config.deployment.type}` : ''}
 
 === Next Steps ===
-1. Review working memory before making changes
-2. Apply relevant error prevention strategies
-3. Document any new decisions or constraints
-4. Update memory with new learnings
+1. Review system health and address any warnings
+2. Apply relevant patterns from memory
+3. Follow pre-implementation checklist
+4. Monitor performance metrics
+5. Document new learning
 
 === Current Task ===
-[AI should describe the immediate task while considering all previous context]`;
+[AI should describe the immediate task while considering all previous context and applying learned optimizations]
+
+=== End of Enhanced Prompt ===`;
 
   return prompt;
 }
 
-export const defaultWorkingMemory: ProjectMemory = {
-  currentState: 'Initializing project',
-  previousErrors: [
-    {
-      error: 'TypeScript build errors due to missing types',
-      solution: 'Properly define all types and interfaces before implementation',
-      context: 'During initial setup of NextUI components',
-      prevention: 'Always start with type definitions and interface declarations before implementing components'
-    },
-    {
-      error: 'Dependency conflicts between UI libraries',
-      solution: 'Use a single UI library consistently throughout the project',
-      context: 'Mixing Radix UI with NextUI components',
-      prevention: 'Decide on UI framework upfront and stick to it exclusively'
-    },
-    {
-      error: 'Build failures in deployment',
-      solution: 'Ensure proper build configuration and test locally first',
-      context: 'Deployment to production environment',
-      prevention: 'Maintain a pre-deployment checklist including all necessary configurations'
-    }
-  ],
-  importantDecisions: [
-    'Using NextUI for consistent component library',
-    'Implementing wizard interface for better user experience',
-    'Maintaining working memory for error prevention'
-  ],
-  workingConstraints: [
-    'All TypeScript types must be properly defined',
-    'Single UI framework throughout the project',
-    'Document all error solutions for future reference',
-    'Test builds locally before deployment'
-  ]
-};
+// Example implementation continues with defaultWorkingMemory...
