@@ -1,21 +1,4 @@
-import type { ProjectConfig, SystemHealth } from '../types';
-
-interface ErrorSolution {
-  error: string;
-  solution: string;
-  context: string;
-  prevention: string;
-  impact: 'low' | 'medium' | 'high';
-  timeToResolve: string;
-}
-
-export interface ProjectMemory {
-  currentState: string;
-  previousErrors: ErrorSolution[];
-  importantDecisions: string[];
-  workingConstraints: string[];
-  systemHealth: SystemHealth[];
-}
+import type { ProjectConfig, SystemHealth, ProjectMemory } from '../types';
 
 export function generateEnhancedPrompt(
   projectName: string,
