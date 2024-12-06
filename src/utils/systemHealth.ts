@@ -1,9 +1,4 @@
-export interface HealthCheck {
-  runDependencyCheck(): Promise<boolean>;
-  validateTypeDefinitions(): Promise<boolean>;
-  checkBuildConfiguration(): Promise<boolean>;
-  verifyFrameworkCompatibility(): Promise<boolean>;
-}
+import type { SystemHealth } from '../types';
 
 export function generateSystemHealthReport(): SystemHealth[] {
   return [

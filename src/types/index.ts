@@ -1,14 +1,15 @@
+export interface SystemHealth {
+  category: string;
+  status: 'good' | 'warning' | 'error';
+  recommendations: string[];
+}
+
 export interface ProjectConfig {
   type: 'frontend' | 'backend' | 'fullstack';
   ui?: {
     framework: string;
     stateManagement: string;
     responsive: boolean;
-  };
-  backend?: {
-    apiPattern: string;
-    database: string;
-    auth: boolean;
   };
   deployment: {
     type: string;
