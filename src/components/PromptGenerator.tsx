@@ -6,9 +6,47 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import AdvancedOptions from './AdvancedOptions';
 import { generatePrompt } from '../utils/generatePrompt';
+import type { ProjectConfig } from '../types';
+
+const defaultConfig: ProjectConfig = {
+  type: 'frontend',
+  ui: {
+    framework: 'react',
+    stateManagement: 'none',
+    responsive: true
+  },
+  deployment: {
+    type: 'docker',
+    frequency: 'continuous',
+    environments: ['development', 'production']
+  },
+  testing: {
+    unit: true,
+    integration: false,
+    e2e: false
+  },
+  security: {
+    authMethod: 'none',
+    encryption: false,
+    compliance: []
+  },
+  scaling: {
+    expectedLoad: 'low',
+    dataVolume: 'small',
+    distribution: 'single-region'
+  }
+};
 
 const PromptGenerator: React.FC = () => {
-  // ... existing state ...
+  const [projectName, setProjectName] = useState('');
+  const [context, setContext] = useState('');
+  const [config, setConfig] = useState<ProjectConfig>(defaultConfig);
+  const [generatedPrompt, setGeneratedPrompt] = useState('');
+
+  const handleGeneratePrompt = () => {
+    const prompt = generatePrompt(projectName, context, config);
+    setGeneratedPrompt(prompt);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4 sm:px-6 lg:px-8">
